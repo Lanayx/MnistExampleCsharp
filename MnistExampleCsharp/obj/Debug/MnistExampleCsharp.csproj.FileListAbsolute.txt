@@ -1,0 +1,8 @@
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Debug\MnistExampleCsharp.exe.config
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Debug\MnistExampleCsharp.exe
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Debug\MnistExampleCsharp.pdb
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\obj\Debug\MnistExampleCsharp.csprojResolveAssemblyReference.cache
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\obj\Debug\MnistExampleCsharp.exe
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\obj\Debug\MnistExampleCsharp.pdb
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Debug\Newtonsoft.Json.dll
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Debug\Newtonsoft.Json.xml
