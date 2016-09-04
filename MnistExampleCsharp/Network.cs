@@ -26,10 +26,10 @@ namespace MnistExampleCsharp
 
 
 
-            this.weights = new DenseMatrix[sizes.Length-1];
+            this.weights = new Matrix<double>[sizes.Length-1];
             for (int i = 0; i < sizes.Length-1; i++)
             {
-                this.weights[i] = DenseMatrix.OfColumnArrays(Enumerable.Range(0, sizes[i + 1])
+                this.weights[i] = DenseMatrix.OfRowArrays(Enumerable.Range(0, sizes[i + 1])
                     .Select(e => Enumerable.Range(0, sizes[i]).Select(e1 => GetRandomNumber(-3, 3, r)).ToArray()).ToArray());
             }
         }
@@ -76,8 +76,12 @@ namespace MnistExampleCsharp
                 training_data = training_data.OrderBy(x => rnd.Next()).ToArray();
                 
                 var mini_batches = Split(training_data, mini_batch_size);
+                var c = 0;
                 foreach (var mini_batch in mini_batches)
+                {
                     Update_mini_batch(mini_batch.ToArray(), eta);
+                    Console.WriteLine(c++);
+                }
                 if (test_data != null)
                     Console.WriteLine("Epoch {0}: {1} / {2}", j, Evaluate(test_data), n_test);
                 else
@@ -94,18 +98,18 @@ namespace MnistExampleCsharp
                 var backPropRes = Backprop(test.X, test.Y);
                 var delta_nabla_b = backPropRes.Item1;
                 var delta_nabla_w = backPropRes.Item2;
-                for (int i = 0; i < sizes.Length; i++)
+                for (int i = 0; i < weights.Length; i++)
                 {
                     nabla_w[i] += delta_nabla_w[i];
                     nabla_b[i] += delta_nabla_b[i];
 
                     weights[i] -= nabla_w[i] * eta / mini_batch.Length;
-                    biases[i] -= nabla_b[i] * eta / mini_batch.Length;
+                    biases[i] = biases[i] - nabla_b[i] * eta / mini_batch.Length; 
                 }
             }
         }
 
-        public Tuple<Vector<double>[], Matrix<double>[]> Backprop(Vector<double> x, int y) {
+        public Tuple<Vector<double>[], Matrix<double>[]> Backprop(Vector<double> x, Vector<double> y) {
             //"""Return a tuple ``(nabla_b, nabla_w)`` representing the
             //gradient for the cost function C_x.  ``nabla_b`` and
             //``nabla_w`` are layer-by-layer lists of numpy arrays, similar
@@ -117,7 +121,7 @@ namespace MnistExampleCsharp
             var activations = new List<Vector<double>> {x}; // # list to store all the activations, layer by layer
             var zs = new List<Vector<double>>(); // # list to store all the z vectors, layer by layer
 
-            for (int i = 0; i < sizes.Length; i++)
+            for (int i = 0; i < weights.Length; i++)
             {
                 var z = weights[i]*activation + biases[i];
                 zs.Add(z);
@@ -125,9 +129,9 @@ namespace MnistExampleCsharp
                 activations.Add(activation);
             }
             //# backward pass
-            var delta = CostDerivative(activations[-1], y).PointwiseMultiply(SigmoidPrime(zs[zs.Count-1]));
+            var delta = CostDerivative(activations[activations.Count- 1], y).PointwiseMultiply(SigmoidPrime(zs[zs.Count-1]));
             nabla_b[nabla_b.Length-1] = delta;
-            nabla_w[nabla_w.Length - 1] = delta.ToColumnMatrix() * activations[-2].ToRowMatrix();
+            nabla_w[nabla_w.Length - 1] = delta.ToColumnMatrix() * activations[activations.Count - 2].ToRowMatrix();
             //# Note that the variable l in the loop below is used a little
             //# differently to the notation in Chapter 2 of the book.  Here,
             //# l = 1 means the last layer of neurons, l = 2 is the
@@ -136,11 +140,11 @@ namespace MnistExampleCsharp
             //# that Python can use negative indices in lists.
             for (var i = num_layers - 2; i > 0; i--)
             {
-                var z = zs[i];
+                var z = zs[i-1];
                 var sp = SigmoidPrime(z);
-                delta = weights[i + 1].Transpose()*delta.PointwiseMultiply(sp);
-                nabla_b[i] = delta;
-                nabla_w[i] = delta.ToColumnMatrix() *activations[i - 1].ToRowMatrix();    
+                delta = (weights[i].Transpose()*delta).PointwiseMultiply(sp);
+                nabla_b[i-1] = delta;
+                nabla_w[i-1] = delta.ToColumnMatrix() *activations[i - 1].ToRowMatrix();    
             }
 
             return new Tuple<Vector<double>[], Matrix<double>[]>(nabla_b, nabla_w);
@@ -167,30 +171,24 @@ namespace MnistExampleCsharp
         //network's output is assumed to be the index of whichever
         //neuron in the final layer has the highest activation."""
 
-        return test_data.Count(test => Feedforward(test.X).MaximumIndex() == test.Y);
+        return test_data.Count(test => Feedforward(test.X).MaximumIndex() == test.Y.MaximumIndex());
     }
 
     public Vector<double> Feedforward(Vector<double> a) {
             //"""Return the output of the network if ``a`` is input."""
-        for (int i = 0; i < sizes.Length; i++)
+        for (int i = 0; i < weights.Length; i++)
         {
             a = Sigmoid(weights[i]*a + biases[i]);
         }
         return a;
     }
 
-    public Vector<double> CostDerivative(Vector<double> output_activations, int y)
+    public Vector<double> CostDerivative(Vector<double> output_activations, Vector<double> y)
     { 
         //"""Return the vector of partial derivatives \partial C_x /
         //\partial a for the output activations."""
         return output_activations-y;
     }
   }
-
-    public class Test
-    {
-        public Vector<double> X;
-        public int Y;
-    }
 }
 
