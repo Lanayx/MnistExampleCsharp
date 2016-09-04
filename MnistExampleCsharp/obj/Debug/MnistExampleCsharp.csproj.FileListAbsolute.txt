@@ -6,3 +6,5 @@ d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\obj\Debug\MnistExample
 d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\obj\Debug\MnistExampleCsharp.pdb
 d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Debug\Newtonsoft.Json.dll
 d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Debug\Newtonsoft.Json.xml
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Debug\MathNet.Numerics.dll
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Debug\MathNet.Numerics.xml

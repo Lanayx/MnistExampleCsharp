@@ -12,8 +12,8 @@ namespace MnistExampleCsharp
     {
         public int num_layers;
         public int[] sizes;
-        public DenseVector[] biases;
-        public DenseMatrix[] weights;
+        public Vector<double>[] biases;
+        public Matrix<double>[] weights;
 
         public Network(int[] sizes)//2 3 4
         {
@@ -43,19 +43,19 @@ namespace MnistExampleCsharp
             return 1.0 / (1.0 + Math.Exp(z));
         }
 
-        public DenseMatrix Sigmoid(DenseMatrix z)
+        public Vector<double> Sigmoid(Vector<double> z)
         {
             //"""The sigmoid function."""
-            return (DenseMatrix)z.Map(SigmoidSimple,Zeros.Include);
+            return z.Map(SigmoidSimple, Zeros.Include);
         }
 
-        public DenseVector Sigmoid(DenseVector z)
+        public Vector<double> SigmoidPrime(Vector<double> z)
         {
             //"""The sigmoid function."""
-            return (DenseVector)z.Map(SigmoidSimple, Zeros.Include);
+            return Sigmoid(z).PointwiseMultiply(1- Sigmoid(z));
         }
 
-        public void SGD(dynamic[] training_data , int epochs , int mini_batch_size , double eta , dynamic[] test_data)
+        public void SGD(Test[] training_data , int epochs , int mini_batch_size , double eta , Test[] test_data)
         {
             //"""Train the neural network using mini-batch stochastic
             //gradient descent.The "training_data" is a list of tuples
@@ -68,13 +68,16 @@ namespace MnistExampleCsharp
             int n_test = 0;
             if (test_data != null)
                 n_test = test_data.Length;
-            var n = training_data.Length;
+
+            var rnd = new Random();
             foreach (var j in Enumerable.Range(0, epochs))
             {
-                //random.shuffle(training_data)
+                //randomize
+                training_data = training_data.OrderBy(x => rnd.Next()).ToArray();
+                
                 var mini_batches = Split(training_data, mini_batch_size);
                 foreach (var mini_batch in mini_batches)
-                    Update_mini_batch(mini_batch, eta);
+                    Update_mini_batch(mini_batch.ToArray(), eta);
                 if (test_data != null)
                     Console.WriteLine("Epoch {0}: {1} / {2}", j, Evaluate(test_data), n_test);
                 else
@@ -82,18 +85,66 @@ namespace MnistExampleCsharp
             }
         }
 
-        public void Update_mini_batch(dynamic mini_batch, double eta)
+        public void Update_mini_batch(Test[] mini_batch, double eta)
         {
-            var nabla_b = [np.zeros(b.shape)for b in self.biases]
-            var nabla_w = [np.zeros(w.shape)for w in self.weights]
-            for x, y in mini_batch:
-                delta_nabla_b, delta_nabla_w = self.backprop(x, y)
-                nabla_b = [nb + dnb for nb, dnb in zip(nabla_b, delta_nabla_b)]
-                nabla_w = [nw + dnw for nw, dnw in zip(nabla_w, delta_nabla_w)]
-            self.weights = [w - (eta/len(mini_batch))*nw for w, nw in zip(self.weights, nabla_w)]
-            self.biases = [b - (eta/len(mini_batch))*nb for b, nb in zip(self.biases, nabla_b)]
+            var nabla_b = biases.Select(b => b.Map(value => 0.0)).ToArray();
+            var nabla_w = weights.Select(b => b.Map(value => 0.0)).ToArray();
+            foreach (var test in mini_batch)
+            {
+                var backPropRes = Backprop(test.X, test.Y);
+                var delta_nabla_b = backPropRes.Item1;
+                var delta_nabla_w = backPropRes.Item2;
+                for (int i = 0; i < sizes.Length; i++)
+                {
+                    nabla_w[i] += delta_nabla_w[i];
+                    nabla_b[i] += delta_nabla_b[i];
+
+                    weights[i] -= nabla_w[i] * eta / mini_batch.Length;
+                    biases[i] -= nabla_b[i] * eta / mini_batch.Length;
+                }
+            }
         }
 
+        public Tuple<Vector<double>[], Matrix<double>[]> Backprop(Vector<double> x, int y) {
+            //"""Return a tuple ``(nabla_b, nabla_w)`` representing the
+            //gradient for the cost function C_x.  ``nabla_b`` and
+            //``nabla_w`` are layer-by-layer lists of numpy arrays, similar
+            //to ``self.biases`` and ``self.weights``."""
+            var nabla_b = biases.Select(b => b.Map(value => 0.0)).ToArray();
+            var nabla_w = weights.Select(b => b.Map(value => 0.0)).ToArray();
+            //# feedforward
+            var activation = x;
+            var activations = new List<Vector<double>> {x}; // # list to store all the activations, layer by layer
+            var zs = new List<Vector<double>>(); // # list to store all the z vectors, layer by layer
+
+            for (int i = 0; i < sizes.Length; i++)
+            {
+                var z = weights[i]*activation + biases[i];
+                zs.Add(z);
+                activation = Sigmoid(z);
+                activations.Add(activation);
+            }
+            //# backward pass
+            var delta = CostDerivative(activations[-1], y).PointwiseMultiply(SigmoidPrime(zs[zs.Count-1]));
+            nabla_b[nabla_b.Length-1] = delta;
+            nabla_w[nabla_w.Length - 1] = delta.ToColumnMatrix() * activations[-2].ToRowMatrix();
+            //# Note that the variable l in the loop below is used a little
+            //# differently to the notation in Chapter 2 of the book.  Here,
+            //# l = 1 means the last layer of neurons, l = 2 is the
+            //# second-last layer, and so on.  It's a renumbering of the
+            //# scheme in the book, used here to take advantage of the fact
+            //# that Python can use negative indices in lists.
+            for (var i = num_layers - 2; i > 0; i--)
+            {
+                var z = zs[i];
+                var sp = SigmoidPrime(z);
+                delta = weights[i + 1].Transpose()*delta.PointwiseMultiply(sp);
+                nabla_b[i] = delta;
+                nabla_w[i] = delta.ToColumnMatrix() *activations[i - 1].ToRowMatrix();    
+            }
+
+            return new Tuple<Vector<double>[], Matrix<double>[]>(nabla_b, nabla_w);
+        }
         /// <summary>
     /// Splits an array into several smaller arrays.
     /// </summary>
@@ -108,5 +159,38 @@ namespace MnistExampleCsharp
                 yield return array.Skip(i * size).Take(size);
             }
         }
+    
+
+    public int Evaluate(Test[] test_data) {
+        //"""Return the number of test inputs for which the neural
+        //network outputs the correct result.Note that the neural
+        //network's output is assumed to be the index of whichever
+        //neuron in the final layer has the highest activation."""
+
+        return test_data.Count(test => Feedforward(test.X).MaximumIndex() == test.Y);
+    }
+
+    public Vector<double> Feedforward(Vector<double> a) {
+            //"""Return the output of the network if ``a`` is input."""
+        for (int i = 0; i < sizes.Length; i++)
+        {
+            a = Sigmoid(weights[i]*a + biases[i]);
+        }
+        return a;
+    }
+
+    public Vector<double> CostDerivative(Vector<double> output_activations, int y)
+    { 
+        //"""Return the vector of partial derivatives \partial C_x /
+        //\partial a for the output activations."""
+        return output_activations-y;
+    }
+  }
+
+    public class Test
+    {
+        public Vector<double> X;
+        public int Y;
     }
 }
+
