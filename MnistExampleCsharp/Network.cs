@@ -15,32 +15,34 @@ namespace MnistExampleCsharp
         public Vector<double>[] biases;
         public Matrix<double>[] weights;
 
-        public Network(int[] sizes)//2 3 4
+        public Network(int[] sizes)
         {
-            var r = new Random(0);
+            var r = new Random();
             this.num_layers = sizes.Length;
             this.sizes = sizes;
             this.biases = sizes.Skip(1).Select(x => 
-                 DenseVector.OfArray((new int[x]).Select(e => GetRandomNumber(-3, 3, r)).ToArray())
+                 DenseVector.OfArray((new int[x]).Select(e => GetRandomNumber(r)).ToArray())
                 ).ToArray();
-
-
 
             this.weights = new Matrix<double>[sizes.Length-1];
             for (int i = 0; i < sizes.Length-1; i++)
             {
-                this.weights[i] = DenseMatrix.OfRowArrays(Enumerable.Range(0, sizes[i + 1])
-                    .Select(e => Enumerable.Range(0, sizes[i]).Select(e1 => GetRandomNumber(-3, 3, r)).ToArray()).ToArray());
+                this.weights[i] = DenseMatrix.OfRowArrays(new int[sizes[i + 1]]
+                    .Select(e => new int[sizes[i]].Select(e1 => GetRandomNumber(r)).ToArray()).ToArray());
             }
         }
 
-        public double GetRandomNumber(double minimum, double maximum, Random random)
+        public double GetRandomNumber(Random rand)
         {
-            return random.NextDouble() * (maximum - minimum) + minimum;
+            double u1 = rand.NextDouble(); //these are uniform(0,1) random doubles
+            double u2 = rand.NextDouble();
+            return Math.Sqrt(-2.0 * Math.Log(u1)) *
+                         Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
         }
+
         public double SigmoidSimple(double z) {
             //"""The sigmoid function."""
-            return 1.0 / (1.0 + Math.Exp(z));
+            return 1.0 / (1.0 + Math.Exp(-z));
         }
 
         public Vector<double> Sigmoid(Vector<double> z)
@@ -70,18 +72,18 @@ namespace MnistExampleCsharp
                 n_test = test_data.Length;
 
             var rnd = new Random();
+            var c = 0;
             foreach (var j in Enumerable.Range(0, epochs))
             {
                 //randomize
                 training_data = training_data.OrderBy(x => rnd.Next()).ToArray();
                 
                 var mini_batches = Split(training_data, mini_batch_size);
-                var c = 0;
                 foreach (var mini_batch in mini_batches)
                 {
                     Update_mini_batch(mini_batch.ToArray(), eta);
-                    Console.WriteLine(c++);
                 }
+                Console.WriteLine(c++);
                 if (test_data != null)
                     Console.WriteLine("Epoch {0}: {1} / {2}", j, Evaluate(test_data), n_test);
                 else
