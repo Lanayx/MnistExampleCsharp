@@ -13,7 +13,7 @@ namespace MnistExampleCsharp
     {
         public static Tuple<Test[], Test[]> Load()
         {
-            var trainData = Load("train-images.idx3-ubyte", "train-labels.idx1-ubyte", 10000);
+            var trainData = Load("train-images.idx3-ubyte", "train-labels.idx1-ubyte", 5000);
             var testData = Load("t10k-images.idx3-ubyte", "t10k-labels.idx1-ubyte", 10000);
             return new Tuple<Test[], Test[]>(trainData, testData);
         }
@@ -53,7 +53,7 @@ namespace MnistExampleCsharp
                     for (int j = 0; j < 28; ++j)
                     {
                         byte b = brImages.ReadByte();
-                        pixels[i*28 + j] = b;
+                        pixels[i*28 + j] = b/255.0;
                     }
                 }
 

@@ -72,18 +72,16 @@ namespace MnistExampleCsharp
                 n_test = test_data.Length;
 
             var rnd = new Random();
-            var c = 0;
             foreach (var j in Enumerable.Range(0, epochs))
             {
                 //randomize
-                training_data = training_data.OrderBy(x => rnd.Next()).ToArray();
                 
+                training_data = training_data.OrderBy(x => rnd.Next()).ToArray();
                 var mini_batches = Split(training_data, mini_batch_size);
                 foreach (var mini_batch in mini_batches)
                 {
                     Update_mini_batch(mini_batch.ToArray(), eta);
                 }
-                Console.WriteLine(c++);
                 if (test_data != null)
                     Console.WriteLine("Epoch {0}: {1} / {2}", j, Evaluate(test_data), n_test);
                 else
@@ -93,8 +91,8 @@ namespace MnistExampleCsharp
 
         public void Update_mini_batch(Test[] mini_batch, double eta)
         {
-            var nabla_b = biases.Select(b => b.Map(value => 0.0)).ToArray();
-            var nabla_w = weights.Select(b => b.Map(value => 0.0)).ToArray();
+            var nabla_b = biases.Select(b => (Vector<double>) new DenseVector(b.Count)).ToArray();
+            var nabla_w = weights.Select(w => (Matrix<double>)new DenseMatrix(w.RowCount,w.ColumnCount)).ToArray();
             foreach (var test in mini_batch)
             {
                 var backPropRes = Backprop(test.X, test.Y);
@@ -116,8 +114,8 @@ namespace MnistExampleCsharp
             //gradient for the cost function C_x.  ``nabla_b`` and
             //``nabla_w`` are layer-by-layer lists of numpy arrays, similar
             //to ``self.biases`` and ``self.weights``."""
-            var nabla_b = biases.Select(b => b.Map(value => 0.0)).ToArray();
-            var nabla_w = weights.Select(b => b.Map(value => 0.0)).ToArray();
+            var nabla_b = biases.Select(b => (Vector<double>)new DenseVector(b.Count)).ToArray();
+            var nabla_w = weights.Select(w => (Matrix<double>)new DenseMatrix(w.RowCount, w.ColumnCount)).ToArray();
             //# feedforward
             var activation = x;
             var activations = new List<Vector<double>> {x}; // # list to store all the activations, layer by layer

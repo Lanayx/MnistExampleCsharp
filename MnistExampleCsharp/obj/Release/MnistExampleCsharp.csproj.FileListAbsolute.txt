@@ -1,0 +1,9 @@
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\MnistExampleCsharp.exe.config
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\MnistExampleCsharp.exe
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\MnistExampleCsharp.pdb
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\MathNet.Numerics.dll
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\Newtonsoft.Json.dll
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\MathNet.Numerics.xml
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\Newtonsoft.Json.xml
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\obj\Release\MnistExampleCsharp.exe
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\obj\Release\MnistExampleCsharp.pdb
