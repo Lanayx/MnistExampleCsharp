@@ -7,3 +7,6 @@ d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\MathNet.Nu
 d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\Newtonsoft.Json.xml
 d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\obj\Release\MnistExampleCsharp.exe
 d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\obj\Release\MnistExampleCsharp.pdb
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\obj\Release\MnistExampleCsharp.csprojResolveAssemblyReference.cache
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\x64\libiomp5md.dll
+d:\Work\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\x64\MathNet.Numerics.MKL.dll

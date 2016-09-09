@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MathNet.Numerics;
+using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 
@@ -17,27 +19,15 @@ namespace MnistExampleCsharp
 
         public Network(int[] sizes)
         {
-            var r = new Random();
             this.num_layers = sizes.Length;
             this.sizes = sizes;
-            this.biases = sizes.Skip(1).Select(x => 
-                 DenseVector.OfArray((new int[x]).Select(e => GetRandomNumber(r)).ToArray())
-                ).ToArray();
+            this.biases = sizes.Skip(1).Select(x => Vector<double>.Build.Random(x, new Normal())).ToArray();
 
             this.weights = new Matrix<double>[sizes.Length-1];
             for (int i = 0; i < sizes.Length-1; i++)
             {
-                this.weights[i] = DenseMatrix.OfRowArrays(new int[sizes[i + 1]]
-                    .Select(e => new int[sizes[i]].Select(e1 => GetRandomNumber(r)).ToArray()).ToArray());
+                this.weights[i] = Matrix<double>.Build.Random(sizes[i + 1], sizes[i], new Normal());
             }
-        }
-
-        public double GetRandomNumber(Random rand)
-        {
-            double u1 = rand.NextDouble(); //these are uniform(0,1) random doubles
-            double u2 = rand.NextDouble();
-            return Math.Sqrt(-2.0 * Math.Log(u1)) *
-                         Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
         }
 
         public double SigmoidSimple(double z) {
@@ -59,6 +49,9 @@ namespace MnistExampleCsharp
 
         public void SGD(Test[] training_data , int epochs , int mini_batch_size , double eta , Test[] test_data)
         {
+            Console.WriteLine(Environment.Is64BitProcess);
+
+            Control.UseNativeMKL();
             //"""Train the neural network using mini-batch stochastic
             //gradient descent.The "training_data" is a list of tuples
             //"(x, y)" representing the training inputs and the desired
@@ -91,8 +84,8 @@ namespace MnistExampleCsharp
 
         public void Update_mini_batch(Test[] mini_batch, double eta)
         {
-            var nabla_b = biases.Select(b => (Vector<double>) new DenseVector(b.Count)).ToArray();
-            var nabla_w = weights.Select(w => (Matrix<double>)new DenseMatrix(w.RowCount,w.ColumnCount)).ToArray();
+            var nabla_b = biases.Select(b => Vector<double>.Build.Dense(b.Count)).ToArray();
+            var nabla_w = weights.Select(w => Matrix<double>.Build.Dense(w.RowCount,w.ColumnCount)).ToArray();
             foreach (var test in mini_batch)
             {
                 var backPropRes = Backprop(test.X, test.Y);
@@ -104,7 +97,7 @@ namespace MnistExampleCsharp
                     nabla_b[i] += delta_nabla_b[i];
 
                     weights[i] -= nabla_w[i] * eta / mini_batch.Length;
-                    biases[i] = biases[i] - nabla_b[i] * eta / mini_batch.Length; 
+                    biases[i] -= nabla_b[i] * eta / mini_batch.Length; 
                 }
             }
         }
@@ -114,8 +107,8 @@ namespace MnistExampleCsharp
             //gradient for the cost function C_x.  ``nabla_b`` and
             //``nabla_w`` are layer-by-layer lists of numpy arrays, similar
             //to ``self.biases`` and ``self.weights``."""
-            var nabla_b = biases.Select(b => (Vector<double>)new DenseVector(b.Count)).ToArray();
-            var nabla_w = weights.Select(w => (Matrix<double>)new DenseMatrix(w.RowCount, w.ColumnCount)).ToArray();
+            var nabla_b = biases.Select(b => Vector<double>.Build.Dense(b.Count)).ToArray();
+            var nabla_w = weights.Select(w => Matrix<double>.Build.Dense(w.RowCount, w.ColumnCount)).ToArray();
             //# feedforward
             var activation = x;
             var activations = new List<Vector<double>> {x}; // # list to store all the activations, layer by layer
