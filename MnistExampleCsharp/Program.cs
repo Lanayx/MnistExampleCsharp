@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Accord.Math;
+using MathNet.Numerics;
+using MathNet.Numerics.Distributions;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Newtonsoft.Json;
 
@@ -13,33 +16,24 @@ namespace MnistExampleCsharp
     {
         static void Main(string[] args)
         {
+
+            Control.UseNativeOpenBLAS();
             var net = new Network(new[] { 784, 100, 10 });
             var data = DataLoader.Load();
             net.SGD(data.Item1, 30, 10, 1.0, data.Item2);
-            //Console.WriteLine("Biases");
-            //Console.WriteLine(JsonConvert.SerializeObject(net.biases));
 
-            //Console.WriteLine("Weights");
-            //Console.WriteLine(JsonConvert.SerializeObject(net.weights));
-
-            //var x = DenseMatrix.OfRowArrays(new[] {1.0, 0.0}, new[] {2.0, 3.0});
-            //var y = DenseMatrix.OfRowArrays(new[] { 2.0, 1.0 }, new[] { 0.0,4.0 });
-            //var z = x*y;
-
-            //Test2();
+            //Test();
         }
 
 
         public static void Test()
         {
             var size = 5000;
-            var r = new Random();
-            var x = DenseMatrix.Create(size,size,(rows, columns) => GetRandomNumber(r));
-            var y = DenseMatrix.Create(size, size, (rows, columns) => GetRandomNumber(r));
+            var x = Matrix<double>.Build.Random(size, size, new MathNet.Numerics.Distributions.Normal());
+            var y = Matrix<double>.Build.Random(size, size, new MathNet.Numerics.Distributions.Normal());
             Console.WriteLine("Start");
             var start = DateTime.Now;
-            DenseMatrix z;
-            z = x * y;
+            var z = x * y;
             Console.WriteLine(z.RowCount);
             Console.WriteLine((DateTime.Now - start).TotalSeconds);
         }

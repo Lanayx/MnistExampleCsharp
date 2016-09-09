@@ -49,9 +49,6 @@ namespace MnistExampleCsharp
 
         public void SGD(Test[] training_data , int epochs , int mini_batch_size , double eta , Test[] test_data)
         {
-            Console.WriteLine(Environment.Is64BitProcess);
-
-            Control.UseNativeMKL();
             //"""Train the neural network using mini-batch stochastic
             //gradient descent.The "training_data" is a list of tuples
             //"(x, y)" representing the training inputs and the desired
@@ -96,8 +93,8 @@ namespace MnistExampleCsharp
                     nabla_w[i] += delta_nabla_w[i];
                     nabla_b[i] += delta_nabla_b[i];
 
-                    weights[i] -= nabla_w[i] * eta / mini_batch.Length;
-                    biases[i] -= nabla_b[i] * eta / mini_batch.Length; 
+                    weights[i] -= (eta / mini_batch.Length) * nabla_w[i];
+                    biases[i] -= (eta / mini_batch.Length) * nabla_b[i]; 
                 }
             }
         }
