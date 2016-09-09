@@ -53,7 +53,7 @@ namespace MnistExampleCsharp
                     for (int j = 0; j < 28; ++j)
                     {
                         byte b = brImages.ReadByte();
-                        pixels[i*28 + j] = b;
+                        pixels[i*28 + j] = b/255.0;
                     }
                 }
 

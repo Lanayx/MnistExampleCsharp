@@ -1,0 +1,17 @@
+D:\My\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\MnistExampleCsharp.exe.config
+D:\My\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\MnistExampleCsharp.exe
+D:\My\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\MnistExampleCsharp.pdb
+D:\My\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\MathNet.Numerics.dll
+D:\My\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\Newtonsoft.Json.dll
+D:\My\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\MathNet.Numerics.xml
+D:\My\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\Newtonsoft.Json.xml
+D:\My\DataScience\MnistExampleCsharp\MnistExampleCsharp\obj\Release\MnistExampleCsharp.exe
+D:\My\DataScience\MnistExampleCsharp\MnistExampleCsharp\obj\Release\MnistExampleCsharp.pdb
+D:\My\DataScience\MnistExampleCsharp\MnistExampleCsharp\obj\Release\MnistExampleCsharp.csprojResolveAssemblyReference.cache
+D:\My\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\Accord.dll.config
+D:\My\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\Accord.dll
+D:\My\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\Accord.Math.Core.dll
+D:\My\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\Accord.Math.dll
+D:\My\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\Accord.xml
+D:\My\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\Accord.Math.xml
+D:\My\DataScience\MnistExampleCsharp\MnistExampleCsharp\bin\Release\Accord.Math.Core.xml

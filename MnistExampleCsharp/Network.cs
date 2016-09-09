@@ -20,15 +20,14 @@ namespace MnistExampleCsharp
             var r = new Random();
             this.num_layers = sizes.Length;
             this.sizes = sizes;
-            this.biases = sizes.Skip(1).Select(x => 
-                 DenseVector.OfArray((new int[x]).Select(e => GetRandomNumber(r)).ToArray())
+            this.biases = sizes.Skip(1).Select(x =>
+                 DenseVector.Create(x, (row) => GetRandomNumber(r))
                 ).ToArray();
 
             this.weights = new Matrix<double>[sizes.Length-1];
             for (int i = 0; i < sizes.Length-1; i++)
             {
-                this.weights[i] = DenseMatrix.OfRowArrays(new int[sizes[i + 1]]
-                    .Select(e => new int[sizes[i]].Select(e1 => GetRandomNumber(r)).ToArray()).ToArray());
+                this.weights[i] = DenseMatrix.Create(sizes[i + 1], sizes[i], (row, column) => GetRandomNumber(r));
             }
         }
 
