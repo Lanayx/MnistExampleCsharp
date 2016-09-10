@@ -18,7 +18,7 @@ namespace MnistExampleCsharp
         {
 
             Control.UseNativeOpenBLAS();
-            var net = new Network(new[] { 784, 100, 10 });
+            var net = new Network(new[] { 784, 30, 10 });
             var data = DataLoader.Load();
             net.SGD(data.Item1, 30, 10, 1.0, data.Item2);
 

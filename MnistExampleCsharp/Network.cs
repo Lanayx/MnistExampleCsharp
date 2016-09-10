@@ -61,7 +61,9 @@ namespace MnistExampleCsharp
             if (test_data != null)
                 n_test = test_data.Length;
 
+            Console.WriteLine(Control.LinearAlgebraProvider);
             var rnd = new Random();
+            var timer = DateTime.Now;
             foreach (var j in Enumerable.Range(0, epochs))
             {
                 //randomize
@@ -73,7 +75,7 @@ namespace MnistExampleCsharp
                     Update_mini_batch(mini_batch.ToArray(), eta);
                 }
                 if (test_data != null)
-                    Console.WriteLine("Epoch {0}: {1} / {2}", j, Evaluate(test_data), n_test);
+                    Console.WriteLine("Epoch {0}: {1} / {2} ({3})", j, Evaluate(test_data), n_test, (DateTime.Now - timer).TotalSeconds);
                 else
                     Console.WriteLine("Epoch {0} complete",j);
             }

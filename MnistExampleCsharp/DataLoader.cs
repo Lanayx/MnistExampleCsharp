@@ -13,14 +13,13 @@ namespace MnistExampleCsharp
     {
         public static Tuple<Test[], Test[]> Load()
         {
-            var trainData = Load("train-images.idx3-ubyte", "train-labels.idx1-ubyte", 5000);
+            var trainData = Load("train-images.idx3-ubyte", "train-labels.idx1-ubyte", 50000);
             var testData = Load("t10k-images.idx3-ubyte", "t10k-labels.idx1-ubyte", 10000);
             return new Tuple<Test[], Test[]>(trainData, testData);
         }
 
         public static Test[] Load(string fileName, string labelsFileName, int imagesCount)
         {
-            Console.WriteLine("\nBegin\n");
             FileStream ifsLabels =
              new FileStream(labelsFileName,
              FileMode.Open); // test labels
@@ -66,8 +65,6 @@ namespace MnistExampleCsharp
             brImages.Close();
             ifsLabels.Close();
             brLabels.Close();
-
-            Console.WriteLine("\nEnd\n");
 
             return result.ToArray();
         }
