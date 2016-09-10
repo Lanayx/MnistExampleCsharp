@@ -30,15 +30,10 @@ namespace MnistExampleCsharp
             }
         }
 
-        public double SigmoidSimple(double z) {
-            //"""The sigmoid function."""
-            return 1.0 / (1.0 + Math.Exp(-z));
-        }
-
         public Vector<double> Sigmoid(Vector<double> z)
         {
             //"""The sigmoid function."""
-            return z.Map(SigmoidSimple, Zeros.Include);
+            return 1.0 / (1.0 + (-z).PointwiseExp());
         }
 
         public Vector<double> SigmoidPrime(Vector<double> z)

@@ -17,7 +17,7 @@ namespace MnistExampleCsharp
         static void Main(string[] args)
         {
 
-            Control.UseNativeOpenBLAS();
+            Control.UseNativeMKL();
             var net = new Network(new[] { 784, 30, 10 });
             var data = DataLoader.Load();
             net.SGD(data.Item1, 30, 10, 1.0, data.Item2);
