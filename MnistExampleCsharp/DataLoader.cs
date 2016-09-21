@@ -42,7 +42,6 @@ namespace MnistExampleCsharp
 
             var result = new List<Test>();
             var pixels = new double[784];
-            
 
             // each test image
             for (int di = 0; di < imagesCount; ++di)

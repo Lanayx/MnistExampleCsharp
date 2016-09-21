@@ -20,7 +20,7 @@ namespace MnistExampleCsharp
             Control.UseNativeMKL();
             var net = new Network(new[] { 784, 30, 10 });
             var data = DataLoader.Load();
-            net.SGD(data.Item1, 30, 10, 1.0, data.Item2);
+            net.SGD(data.Item1, 30, 10, 3.0, data.Item2);
 
             //Test();
         }
