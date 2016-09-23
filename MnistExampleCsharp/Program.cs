@@ -16,8 +16,8 @@ namespace MnistExampleCsharp
     {
         static void Main(string[] args)
         {
-
             Control.UseNativeMKL();
+            Console.WriteLine(Control.LinearAlgebraProvider);
             var net = new Network(new[] { 784, 30, 10 });
             var data = DataLoader.Load();
             net.SGD(data.Item1, 30, 10, 3.0, data.Item2);
@@ -28,12 +28,17 @@ namespace MnistExampleCsharp
 
         public static void Test()
         {
-            var size = 5000;
+            var size = 500;
             var x = Matrix<double>.Build.Random(size, size, new MathNet.Numerics.Distributions.Normal());
             var y = Matrix<double>.Build.Random(size, size, new MathNet.Numerics.Distributions.Normal());
             Console.WriteLine("Start");
             var start = DateTime.Now;
-            var z = x * y;
+            Matrix<double> z = null;
+            for (var i = 0; i<1000; i++)
+            {
+                z = x * y;
+            }
+
             Console.WriteLine(z.RowCount);
             Console.WriteLine((DateTime.Now - start).TotalSeconds);
         }

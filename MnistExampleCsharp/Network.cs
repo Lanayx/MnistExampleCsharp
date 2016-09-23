@@ -56,7 +56,6 @@ namespace MnistExampleCsharp
             if (test_data != null)
                 n_test = test_data.Length;
 
-            Console.WriteLine(Control.LinearAlgebraProvider);
             var rnd = new Random();
             var timer = DateTime.Now;
             foreach (var j in Enumerable.Range(0, epochs))
