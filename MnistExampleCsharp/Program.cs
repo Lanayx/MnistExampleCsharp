@@ -22,9 +22,29 @@ namespace MnistExampleCsharp
             var data = DataLoader.Load();
             net.SGD(data.Item1, 30, 10, 3.0, data.Item2);
 
-            //Test();
+            //Test0();
         }
 
+
+        public static void Test0()
+        {
+            var size = 500;
+            var x = Matrix<double>.Build.Random(size, size, new MathNet.Numerics.Distributions.Normal());
+            var y = Matrix<double>.Build.Random(size, size, new MathNet.Numerics.Distributions.Normal());
+            Console.WriteLine("Start");
+            var start = DateTime.Now;
+            Matrix<double> z = null;
+            for (var j = 0; j < 5; j++)
+            {
+                for (var i = 0; i < 1000; i++)
+                {
+                    z = x + y;
+                }
+            }
+
+            Console.WriteLine(z.RowCount);
+            Console.WriteLine((DateTime.Now - start).TotalSeconds);
+        }
 
         public static void Test()
         {

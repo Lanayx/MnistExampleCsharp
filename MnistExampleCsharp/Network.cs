@@ -16,6 +16,8 @@ namespace MnistExampleCsharp
         public int[] sizes;
         public Vector<double>[] biases;
         public Matrix<double>[] weights;
+        public double nbwTime;
+        public double backPropTime;
 
         public Network(int[] sizes)
         {
@@ -69,7 +71,8 @@ namespace MnistExampleCsharp
                     Update_mini_batch(mini_batch.ToArray(), eta);
                 }
                 if (test_data != null)
-                    Console.WriteLine("Epoch {0}: {1} / {2} ({3})", j, Evaluate(test_data), n_test, (DateTime.Now - timer).TotalSeconds);
+                    Console.WriteLine("Epoch {0}: {1} / {2} ({3}) BP:{5} NBW:{4}", j, Evaluate(test_data), n_test,
+                        (DateTime.Now - timer).TotalSeconds, nbwTime, backPropTime );
                 else
                     Console.WriteLine("Epoch {0} complete", j);
             }
@@ -82,6 +85,8 @@ namespace MnistExampleCsharp
             foreach (var test in mini_batch)
             {
                 var backPropRes = Backprop(test.X, test.Y);
+
+                var nbwStart = DateTime.Now;
                 var delta_nabla_b = backPropRes.Item1;
                 var delta_nabla_w = backPropRes.Item2;
                 for (int i = 0; i < weights.Length; i++)
@@ -89,6 +94,7 @@ namespace MnistExampleCsharp
                     nabla_w[i] += delta_nabla_w[i];
                     nabla_b[i] += delta_nabla_b[i];
                 }
+                nbwTime += (DateTime.Now - nbwStart).TotalSeconds;
             }
 
             for (int i = 0; i < weights.Length; i++)
@@ -104,6 +110,9 @@ namespace MnistExampleCsharp
             //gradient for the cost function C_x.  ``nabla_b`` and
             //``nabla_w`` are layer-by-layer lists of numpy arrays, similar
             //to ``self.biases`` and ``self.weights``."""
+
+            var bpStart = DateTime.Now;
+
             var nabla_b = biases.Select(b => Vector<double>.Build.Dense(b.Count)).ToArray();
             var nabla_w = weights.Select(w => Matrix<double>.Build.Dense(w.RowCount, w.ColumnCount)).ToArray();
             //# feedforward
@@ -136,7 +145,7 @@ namespace MnistExampleCsharp
                 nabla_b[i - 1] = delta;
                 nabla_w[i - 1] = delta.ToColumnMatrix() * activations[i - 1].ToRowMatrix();
             }
-
+            backPropTime += (DateTime.Now - bpStart).TotalSeconds;
             return new Tuple<Vector<double>[], Matrix<double>[]>(nabla_b, nabla_w);
         }
         /// <summary>
