@@ -91,8 +91,8 @@ namespace MnistExampleCsharp
                 var delta_nabla_w = backPropRes.Item2;
                 for (int i = 0; i < weights.Length; i++)
                 {
-                    nabla_w[i] += delta_nabla_w[i];
-                    nabla_b[i] += delta_nabla_b[i];
+                    nabla_w[i].Add(delta_nabla_w[i], nabla_w[i]);
+                    nabla_b[i].Add(delta_nabla_b[i], nabla_b[i]);
                 }
                 nbwTime += (DateTime.Now - nbwStart).TotalSeconds;
             }
